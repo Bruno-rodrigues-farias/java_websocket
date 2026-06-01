@@ -1,0 +1,25 @@
+services:
+  backend:
+    build:
+      context: ./socket_java
+      dockerfile: Dockerfile
+    container_name: socket-java-backend
+    ports:
+      - "8080:8080"
+      - "9092:9092"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_SOCKET_URL: http://localhost:9092
+    container_name: socket-java-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
